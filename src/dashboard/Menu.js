@@ -335,11 +335,9 @@ export default function PersistentDrawerLeft() {
           <DrawerHeader />
 
           <Routes>
-            {
-              <Route path="/" element={<Admins />} />
+            <Route path="/" element={<Admins />} />
             <Route path="/doctors" element={<Doctors />} />
             <Route path="/pacients" element={<Users />} />
-            }
           </Routes>
         </Main>
       </Router>
