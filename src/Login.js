@@ -19,7 +19,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { AuthContext } from "./context";
 import { URL } from "./utils/constants";
-
+import Logo from "./images/logo.jpeg"
 const styles = (theme) => ({
   box: {
     height: "100vh",
@@ -48,7 +48,12 @@ const Login = (props) => {
       password: values.password,
     };
     const result = await axios
-      .post(`${URL}${type ? "loginAdmin" : "loginDoctor"}`, params)
+      .post(`${URL}${type ? "loginAdmin" : "loginDoctor"}`, params, {
+        headers: {
+          'Access-Control-Allow-Origin': "*",
+          'Access-Control-Allow-Credentials': "true"
+        }
+      })
       .catch((err) =>
         setValues({ ...values, errors: err.response.data.errors })
       );
@@ -107,6 +112,9 @@ const Login = (props) => {
         ) : (
           <Fragment>
             <CardContent>
+              <div style={{ justifyContent: "center", alignItems: "center", width: "100%", display: "flex" }}>
+                <img alt="Logo" src={Logo} style={{ width: 160, height: 160, borderRadius: 20 }} />
+              </div>
               <InputLabel htmlFor="Email" style={{ marginBottom: 8 }}>
                 Correo
               </InputLabel>

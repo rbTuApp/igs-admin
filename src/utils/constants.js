@@ -6,6 +6,7 @@ const consumeGet = async (url, params) => {
     params: params,
     headers: {
       Authorization: "Bearer " + localStorage.getItem("jwtToken"),
+      'Access-Control-Allow-Origin': URL
     },
   });
 };
