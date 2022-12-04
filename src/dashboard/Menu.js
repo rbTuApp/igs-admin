@@ -50,6 +50,9 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Doctors from "./Doctors";
 import Users from "./Users";
+import UserDoctor from "../doctors/UserDoctor";
+import Reserves from "../doctors/Reserves";
+import EventIcon from '@mui/icons-material/Event';
 const drawerWidth = 80;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
@@ -149,7 +152,7 @@ const IOSSwitch = styled((props) => (
 
 const Navigator = () => {
   const theme = useTheme();
-  const { user, logout } =
+  const { user, logout, reunion } =
     useContext(AuthContext);
   const open = true;
   const [anchorEl, setAnchorEl] = useState(null);
@@ -162,7 +165,7 @@ const Navigator = () => {
   useEffect(() => {
     let conditional = location.pathname.split("/");
     console.log(conditional)
-    if (conditional[1] === "doctors") {
+    if (conditional[1] === "doctors" || conditional[1] === "reserves") {
       setCondition(2)
     } else if (conditional[1] === "pacients") {
 
@@ -171,6 +174,8 @@ const Navigator = () => {
       setCondition(1)
     }
   }, [location])
+  console.log(reunion)
+  if (reunion) return <Fragment></Fragment>;
   return (
     <Fragment>
       <Dialog open={logoutModal}>
@@ -262,46 +267,76 @@ const Navigator = () => {
               />
             </ListItemIcon>
           </ListItem>
-          <ListItem
-            onClick={() => navigate("/doctors")}
-            style={
-              condition === 2
-                ? {
-                  backgroundColor: "white",
-                  color: theme.palette.primary.main,
-                  justifyContent: "center",
-                  borderRadius: 8
-                }
-                : { justifyContent: "center" }
-            }
-            button
-          >
-            <ListItemIcon style={{ justifyContent: "center", minWidth: 0 }}>
-              <PersonIcon
-                sx={{ fontSize: 35, textAlign: "center", color: condition === 2 ? theme.palette.primary.main : "white" }}
-              />
-            </ListItemIcon>
-          </ListItem>
-          <ListItem
-            onClick={() => navigate("/pacients")}
-            style={
-              condition === 3
-                ? {
-                  backgroundColor: "white",
-                  color: theme.palette.primary.main,
-                  justifyContent: "center",
-                  borderRadius: 8
-                }
-                : { justifyContent: "center" }
-            }
-            button
-          >
-            <ListItemIcon style={{ justifyContent: "center", minWidth: 0 }}>
-              <GroupIcon
-                sx={{ fontSize: 35, textAlign: "center", color: condition === 3 ? theme.palette.primary.main : "white" }}
-              />
-            </ListItemIcon>
-          </ListItem>
+          {
+            !user.isDoctor ? (
+              <Fragment>
+
+                <ListItem
+                  onClick={() => navigate("/doctors")}
+                  style={
+                    condition === 2
+                      ? {
+                        backgroundColor: "white",
+                        color: theme.palette.primary.main,
+                        justifyContent: "center",
+                        borderRadius: 8
+                      }
+                      : { justifyContent: "center" }
+                  }
+                  button
+                >
+                  <ListItemIcon style={{ justifyContent: "center", minWidth: 0 }}>
+                    <PersonIcon
+                      sx={{ fontSize: 35, textAlign: "center", color: condition === 2 ? theme.palette.primary.main : "white" }}
+                    />
+                  </ListItemIcon>
+                </ListItem>
+                <ListItem
+                  onClick={() => navigate("/pacients")}
+                  style={
+                    condition === 3
+                      ? {
+                        backgroundColor: "white",
+                        color: theme.palette.primary.main,
+                        justifyContent: "center",
+                        borderRadius: 8
+                      }
+                      : { justifyContent: "center" }
+                  }
+                  button
+                >
+                  <ListItemIcon style={{ justifyContent: "center", minWidth: 0 }}>
+                    <GroupIcon
+                      sx={{ fontSize: 35, textAlign: "center", color: condition === 3 ? theme.palette.primary.main : "white" }}
+                    />
+                  </ListItemIcon>
+                </ListItem>
+              </Fragment>
+            ) : (
+              <Fragment>
+                <ListItem
+                  onClick={() => navigate("/reserves")}
+                  style={
+                    condition === 2
+                      ? {
+                        backgroundColor: "white",
+                        color: theme.palette.primary.main,
+                        justifyContent: "center",
+                        borderRadius: 8
+                      }
+                      : { justifyContent: "center" }
+                  }
+                  button
+                >
+                  <ListItemIcon style={{ justifyContent: "center", minWidth: 0 }}>
+                    <EventIcon
+                      sx={{ fontSize: 35, textAlign: "center", color: condition === 2 ? theme.palette.primary.main : "white" }}
+                    />
+                  </ListItemIcon>
+                </ListItem>
+              </Fragment>
+            )
+          }
           <ListItem
             onClick={() => setLogoutModal(true)}
             style={{ justifyContent: "center" }}
@@ -335,9 +370,20 @@ export default function PersistentDrawerLeft() {
           <DrawerHeader />
 
           <Routes>
-            <Route path="/" element={<Admins />} />
-            <Route path="/doctors" element={<Doctors />} />
-            <Route path="/pacients" element={<Users />} />
+            {
+              !user.isDoctor ? (
+                <Fragment>
+                  <Route path="/" element={<Admins />} />
+                  <Route path="/doctors" element={<Doctors />} />
+                  <Route path="/pacients" element={<Users />} />
+                </Fragment>
+              ) : (
+                <Fragment>
+                  <Route path="/" element={<UserDoctor />} />
+                  <Route path="/reserves" element={<Reserves />} />
+                </Fragment>
+              )
+            }
           </Routes>
         </Main>
       </Router>

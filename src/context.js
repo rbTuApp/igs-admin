@@ -4,6 +4,7 @@ import { isArray } from "lodash";
 
 const initialState = {
   user: null,
+  reunion: false
 };
 
 if (localStorage.getItem("jwtToken")) {
@@ -18,8 +19,10 @@ if (localStorage.getItem("jwtToken")) {
 
 const AuthContext = createContext({
   user: null,
+  reunion: false,
   login: (userData) => { },
   logout: () => { },
+  setReunion: () => { }
 });
 
 function authReducer(state, action) {
@@ -34,6 +37,11 @@ function authReducer(state, action) {
         ...state,
         user: null,
       };
+    case "SETREUNION":
+      return {
+        ...state,
+        reunion: action.payload
+      }
     default:
       return state;
   }
@@ -51,6 +59,12 @@ function AuthProvider(props) {
 
     window.location.href = "/";
   }
+  function setReunion(userData) {
+    dispatch({
+      type: "SETREUNION",
+      payload: userData,
+    });
+  }
 
   function logout() {
     localStorage.removeItem("jwtToken");
@@ -62,6 +76,8 @@ function AuthProvider(props) {
     <AuthContext.Provider
       value={{
         user: state.user,
+        reunion: state.reunion,
+        setReunion,
         login,
         logout,
       }}

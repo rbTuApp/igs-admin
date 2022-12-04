@@ -33,6 +33,7 @@ const styles = (theme) => ({
 });
 const Login = (props) => {
   const { login } = useContext(AuthContext);
+  const [type, setType] = useState(false)
   const { classes } = props;
   const [values, setValues] = useState({
     password: "",
@@ -47,13 +48,12 @@ const Login = (props) => {
       password: values.password,
     };
     const result = await axios
-      .post(`${URL}loginAdmin`, params)
+      .post(`${URL}${type ? "loginAdmin" : "loginDoctor"}`, params)
       .catch((err) =>
         setValues({ ...values, errors: err.response.data.errors })
       );
     try {
       if (result.status === 200) {
-        console.log("LOGGED?", result.data);
         login(result.data);
       } else {
         setValues({ ...values, errors: result.data.errors });
@@ -144,6 +144,10 @@ const Login = (props) => {
                   </InputAdornment>
                 }
               />
+              <Box style={{ display: "flex", justifyContent: "space-around", marginTop: 12 }}>
+                <Box onClick={() => setType(false)} style={type ? { cursor: "pointer", borderWidth: 2, borderColor: "#1B5A90", borderStyle: "solid", borderRadius: 8, padding: 12 } : { borderRadius: 8, padding: 12, background: "#1B5A90", color: "white", cursor: "pointer" }}>Doctor</Box>
+                <Box onClick={() => setType(true)} style={!type ? { cursor: "pointer", borderWidth: 2, borderColor: "#1B5A90", borderStyle: "solid", borderRadius: 8, padding: 12 } : { borderRadius: 8, padding: 12, background: "#1B5A90", color: "white", cursor: "pointer" }}>Administrador</Box>
+              </Box>
             </CardContent>
             <CardActions
               style={{

@@ -1,5 +1,6 @@
 const { default: axios } = require("axios");
-const URL = process.env.REACT_APP_SERVER_DOMAIN;
+const URL = "https://www.server.369fm.com.co/";
+// const URL = "http://localhost:4242/";
 const consumeGet = async (url, params) => {
   return await axios.get(URL + url, {
     params: params,
