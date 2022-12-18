@@ -46,6 +46,7 @@ export default function Admins() {
       email: "",
       password: "",
       confirmPassword: "",
+      onlyPQR: false
     },
   });
   const [errors, setErrors] = useState(null);
@@ -329,6 +330,43 @@ export default function Admins() {
                 />
               </Grid>
             </Grid>
+            <Grid
+              style={{
+                justifyContent: "center",
+                alignItems: "center  ",
+                marginBottom: 18,
+              }}
+              container
+            >
+              <Grid xs={4}>
+                <Typography style={{ marginRight: 8 }}>
+                  Solo para PQR
+                </Typography>
+              </Grid>
+              <Grid xs={8}>
+                <Select
+                  value={selectedAdmin.admin.onlyPQR}
+                  fullWidth
+                  style={{ maxWidth: "90.666667%" }}
+                  onChange={(e) =>
+                    setSelectedAdmin({
+                      ...selectedAdmin,
+                      admin: {
+                        ...selectedAdmin.admin,
+                        onlyPQR: e.target.value,
+                      },
+                    })
+                  }
+                >
+                  <MenuItem value={true}>
+                    SI
+                  </MenuItem>
+                  <MenuItem value={false}>
+                    NO
+                  </MenuItem>
+                </Select>
+              </Grid>
+            </Grid>
             {errors && (
               <Card style={{ width: "80%", marginLeft: "10%" }}>
                 <CardContent>
@@ -411,7 +449,7 @@ export default function Admins() {
                           email: "",
                           password: "",
                           confirmPassword: "",
-                          market: "",
+                          onlyPQR: false
                         },
                         edit: false,
                       })

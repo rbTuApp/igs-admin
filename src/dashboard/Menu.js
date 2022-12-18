@@ -53,6 +53,7 @@ import Users from "./Users";
 import UserDoctor from "../doctors/UserDoctor";
 import Reserves from "../doctors/Reserves";
 import EventIcon from '@mui/icons-material/Event';
+import PQR from "./PQR";
 const drawerWidth = 80;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
@@ -387,6 +388,6 @@ export default function PersistentDrawerLeft() {
           </Routes>
         </Main>
       </Router>
-    </Box>
+    </Box >
   );
 }

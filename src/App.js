@@ -14,6 +14,7 @@ import {
 } from "react-router-dom";
 import { AuthContext, AuthProvider } from "./context";
 import Dashboard from "./dashboard/Dashboard";
+import PQR from "./dashboard/PQR";
 function App() {
   return (
     <ThemeProvider theme={theme}>
@@ -27,6 +28,9 @@ function MainRouter() {
   const { user } = useContext(AuthContext);
   if (!user) {
     return <Login />;
+  }
+  if (user.onlyPQR) {
+    return <PQR />
   }
   return <Dashboard />;
 }
