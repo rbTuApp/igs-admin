@@ -22,7 +22,7 @@ import {
   FormGroup,
   FormControlLabel,
 } from "@mui/material";
-import { AssignmentLate, Edit, Group, Person, SettingsInputCompositeSharp, Store, UploadFile } from "@mui/icons-material";
+import { AssignmentLate, Edit, FileCopy, Group, Person, SettingsInputCompositeSharp, Store, UploadFile } from "@mui/icons-material";
 import { consumeGet, URL } from "../utils/constants";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -86,6 +86,7 @@ export default function Reserves() {
   const [errors, setErrors] = useState(false);
   const [sucess, setSucess] = useState(false)
   const [sucess2, setSucess2] = useState(false)
+  const [files, setFiles] = useState(null)
   const [deleteModalAdmin, setDeleteModalAdmin] = useState(null);
   const initReservation = async (id) => {
     try {
@@ -96,7 +97,8 @@ export default function Reserves() {
           "Access-Control-Allow-Origin": "*",
         },
       };
-      const result = await axios.post(URL + "initReserve", {
+      const link = user.speciality === "URGENCIAS" ? "initReserveUrgency" : "initReserve"
+      const result = await axios.post(URL + link, {
         reserve: id
       }, config);
       if (result.status === 200) {
@@ -142,10 +144,12 @@ export default function Reserves() {
       InnerReunion(false)
     },
   }
+  console.log(user);
   useEffect(() => {
     const tryFunct = async () => {
       try {
-        const result = await consumeGet("reservesDoctor/" + user.id, {});
+        const link = user.speciality === "URGENCIAS" ? "reservesDoctorUrgency" : "reservesDoctor/" + user.id
+        const result = await consumeGet(link, {});
 
         if (result.status === 200) {
           setAdmins(result.data);
@@ -242,6 +246,48 @@ export default function Reserves() {
                   )
                 }
                 {
+                  files && (
+
+                    <Dialog open={true}>
+                      <Box style={{ padding: 12 }}>
+                        <DialogTitle
+                          style={{
+                            marginBottom: 20,
+                            textAlign: "center",
+                            fontSize: 20,
+                            fontWeight: 800,
+                          }}
+                        >
+                          Documentos
+                        </DialogTitle>
+                        <DialogContent>
+                          {files.length > 0 ? files.map((f, i) => (
+                            <Box style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+
+                              <Typography>Archivo {i + 1}</Typography>
+                              <Button><a target="_blank" href={URL + f} >Descargar</a></Button>
+                            </Box>
+                          )) : (<Typography>El paciente no ha cargado documentos</Typography>)}
+
+                        </DialogContent>
+                        <DialogActions>
+                          <Button
+                            color="inherit"
+                            onClick={() => {
+                              setFiles(null)
+                            }}
+                            variant="contained"
+                            disabled={loading}
+                            style={{ width: "49%", marginRight: 4 }}
+                          >
+                            Salir
+                          </Button>
+                        </DialogActions>
+                      </Box>
+                    </Dialog>
+                  )
+                }
+                {
                   finish && (
 
                     <Dialog open={true}>
@@ -257,7 +303,7 @@ export default function Reserves() {
                           ¿Estas seguro?
                         </DialogTitle>
                         <DialogContent>
-                          <Typography style={{textAlign: "center"}}>Al confirmar daras por terminada la reservacion concluyendo en que se realizo con exito</Typography>
+                          <Typography style={{ textAlign: "center" }}>Al confirmar daras por terminada la reservacion concluyendo en que se realizo con exito</Typography>
                         </DialogContent>
                         <DialogActions>
                           <Button
@@ -340,6 +386,9 @@ export default function Reserves() {
                                   <TableCell>Patologia</TableCell>
                                   <TableCell>Fecha y hora</TableCell>
                                   <TableCell style={{ textAlign: "center" }}>
+                                    Documentos
+                                  </TableCell>
+                                  <TableCell style={{ textAlign: "center" }}>
                                     Iniciar Reunion
                                   </TableCell>
                                   <TableCell style={{ textAlign: "center" }}>
@@ -356,6 +405,14 @@ export default function Reserves() {
                                     <TableCell>{a.pacient.document}</TableCell>
                                     <TableCell>{a.pacient.pathology}</TableCell>
                                     <TableCell>{a.date + " " + a.time}</TableCell>
+                                    <TableCell style={{ textAlign: "center" }}>
+                                      <Button
+                                        onClick={() => setFiles(a.files)}
+                                        color="inherit"
+                                      >
+                                        <FileCopy />
+                                      </Button>
+                                    </TableCell>
                                     <TableCell style={{ textAlign: "center" }}>
                                       <Button
                                         onClick={() =>
@@ -417,7 +474,8 @@ export default function Reserves() {
                 </Grid>
               </Box >
             </LocalizationProvider >
-          )}
-    </Fragment>
+          )
+      }
+    </Fragment >
   );
 }

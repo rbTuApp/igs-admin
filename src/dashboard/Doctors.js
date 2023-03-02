@@ -33,6 +33,7 @@ import { AuthContext } from "../context";
 import axios from "axios";
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 const options = [
+  "URGENCIAS",
   "U.S.M.PSICOLOGIA",
   "CIRUGIA GASTROINTESTINAL Y END",
   "CIRUGIA LAPAROSCOPIA",
